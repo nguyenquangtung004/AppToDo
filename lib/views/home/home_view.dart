@@ -5,7 +5,12 @@ import 'package:app_to_do/views/home/widget/task_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:app_to_do/untils/app_str.dart';
 import 'package:app_to_do/extensions/space_exs.dart';
+
+///Tự import
 import 'package:lottie/lottie.dart';
+
+///Tự import
+import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 
 ///Tự import
 import 'package:animate_do/animate_do.dart';
@@ -21,7 +26,9 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final List<int> tesing = [2,232,51];
+  //Import thư viện SliderDrawer
+  GlobalKey<SliderDrawerState> dKey = GlobalKey<SliderDrawerState>();
+  final List<int> tesing = [2, 232, 51];
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,10 @@ class _HomeViewState extends State<HomeView> {
       floatingActionButton: Fab(),
 
       //Body
-      body: _buildHomeBody(textTheme),
+      body: SliderDrawer(
+          slider: Container(),
+          child: _buildHomeBody(textTheme)
+      ),
     );
   }
 
@@ -59,8 +69,7 @@ class _HomeViewState extends State<HomeView> {
                   child: CircularProgressIndicator(
                     value: 1 / 3,
                     backgroundColor: Colors.grey,
-                    valueColor:
-                        AlwaysStoppedAnimation(AppColors.primaryColor),
+                    valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
                   ),
                 ),
                 //Space
@@ -137,6 +146,7 @@ class _HomeViewState extends State<HomeView> {
                       );
                     },
                   )
+
                 /// Task list is empty
                 : Column(
                     //Căn animation ra giữa
@@ -162,6 +172,7 @@ class _HomeViewState extends State<HomeView> {
                       //Sub Text
                       FadeInUp(
                         from: 30,
+
                         ///Đặt ra một câu hỏi đó là tại sao cứ phải dùng const trong một số lớp giao diện ví dụ như :
                         ///child: const Text(AppStr.doneAllTask)
                         /// -> Tối ưu hóa hiệu suất của ứng dụng khi mỗi lần flutter chạy lại và phải tạo lại instance mới của widget Text đó, mặc dù giá trị của nó không thay đổi.
