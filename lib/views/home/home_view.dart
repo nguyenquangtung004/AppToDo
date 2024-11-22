@@ -91,7 +91,22 @@ class _HomeViewState extends State<HomeView> {
                 itemCount: 20,
                 scrollDirection: Axis.vertical,
                 itemBuilder: (context, index) {
-                  return const TaskWidget();
+                  return Dismissible(
+                    direction: DismissDirection.horizontal,
+                    onDismissed: (_) {},
+                    background: Row(
+                      children: [
+                        Icon(
+                          Icons.delete_outline,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                    key: Key(
+                      index.toString(),
+                    ),
+                    child: const TaskWidget(),
+                  );
                 },
               ),
             )
@@ -101,5 +116,3 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
-
-
