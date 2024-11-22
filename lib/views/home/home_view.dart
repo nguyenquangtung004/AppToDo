@@ -1,9 +1,11 @@
 import 'package:app_to_do/untils/app_colors.dart';
+import 'package:app_to_do/untils/constants.dart';
 import 'package:app_to_do/views/home/components/fab.dart';
 import 'package:app_to_do/views/home/widget/task_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:app_to_do/untils/app_str.dart';
 import 'package:app_to_do/extensions/space_exs.dart';
+import 'package:lottie/lottie.dart';
 import 'package:hive/hive.dart';
 
 class HomeView extends StatefulWidget {
@@ -14,7 +16,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final List<int> tesing =[1,2];
+  final List<int> tesing =[];
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -120,7 +122,13 @@ class _HomeViewState extends State<HomeView> {
                   );
                 },
               ):Column(
-                children: [],
+                children: [
+                  //Phải tự import bằng tay lottie
+                  //Xong sau đó tạo ra file space_exs.dart
+                  //Khai báo vào trong đó lottieUrl
+                  //rồi lên testing để tảo ra danh sách rỗng kiểm tra xem đã thực hiện thành công lottie chưa
+                  Lottie.asset(lottieUrl),
+                ],
               )
             )
           ],
