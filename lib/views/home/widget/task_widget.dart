@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../untils/app_colors.dart';
 
 class TaskWidget extends StatelessWidget {
-  const TaskWidget({
-    super.key,
-  });
+  const TaskWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

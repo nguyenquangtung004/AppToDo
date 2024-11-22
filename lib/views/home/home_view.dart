@@ -14,6 +14,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final List<int> tesing =[1,2];
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -88,17 +89,27 @@ class _HomeViewState extends State<HomeView> {
               height: 745,
               child: ListView.builder(
                 // padding: EdgeInsets.only(bottom: 80),
-                itemCount: 20,
+                itemCount: tesing.length,
                 scrollDirection: Axis.vertical,
                 itemBuilder: (context, index) {
+                  // Dismissible khi vuốt trái sang phải có thể xóa
                   return Dismissible(
                     direction: DismissDirection.horizontal,
                     onDismissed: (_) {},
                     background: Row(
+                      //mainAxisAlignment: MainAxisAlignment.center căn các lớp như icon và text ra giữa khi vuốt
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.delete_outline,
                           color: Colors.grey,
+                        ),
+                        8.w,
+                        const Text(
+                          AppStr.deletedTask,
+                          style: TextStyle(
+                            color: Colors.grey
+                          ),
                         ),
                       ],
                     ),
