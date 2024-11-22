@@ -86,13 +86,15 @@ class _HomeViewState extends State<HomeView> {
               width: double.infinity,
               height: 745,
               child: ListView.builder(
+                // padding: EdgeInsets.only(bottom: 80),
                 itemCount: 20,
                 scrollDirection: Axis.vertical,
                 itemBuilder: (context, index) {
                   return AnimatedContainer(
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+                    //Giãn cách dòng trong list view
                     decoration: BoxDecoration(
-                        color: AppColors.primaryColor.withOpacity(0.3),
+                        color: AppColors.primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
@@ -114,19 +116,42 @@ class _HomeViewState extends State<HomeView> {
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.grey, width: .8),
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.check,
                             color: Colors.white,
                           ),
                         ),
                       ),
 
-                      title: Text(
-                        "Done",
-                        style: TextStyle(
+                      ///Task Title
+                      title: Padding(
+                        padding: const EdgeInsets.only(bottom: 5, top: 3),
+
+                        ///Giãn cách check box với title theo chiều ngang
+
+                        ///Tiêu đề
+                        child: Text(
+                          "Done",
+                          style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.lineThrough),
+                            // decoration: TextDecoration.lineThrough,
+                          ),
+                        ),
+                      ),
+
+                      ///Task Decoration
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start, // Điều chỉnh descoration xuống dưới title
+                        children: [
+                          Text(
+                            "Descrpation",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w300),
+                          )
+                        ],
+                        //Date of task
                       ),
                     ),
                   );
