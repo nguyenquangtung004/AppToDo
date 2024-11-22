@@ -1,5 +1,6 @@
 
 import 'package:app_to_do/views/home/home_view.dart';
+import 'package:app_to_do/views/home/widget/layout_add.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -98,6 +99,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const HomeView(),
+      // home: const LayoutAdd(),
     );
   }
 }
