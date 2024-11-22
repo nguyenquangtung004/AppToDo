@@ -142,16 +142,40 @@ class _HomeViewState extends State<HomeView> {
 
                       ///Task Decoration
                       subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start, // Điều chỉnh descoration xuống dưới title
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        // Điều chỉnh descoration xuống dưới title
                         children: [
                           Text(
                             "Descrpation",
                             style: TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w300),
-                          )
+                          ),
+                          Align(
+                            // Sau khi thêm Lớp Align thì ngày tháng với sub date được căn ra giữa
+                            //Xong alignment: Alignment.centerRight để căn ra bên phải của app
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              //Xong dùng lớp padding để tạo khoảng cách với lề của của list title
+                              padding: const EdgeInsets.only(bottom: 10,top: 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Date",
+                                    style:
+                                        TextStyle(fontSize: 14, color: Colors.grey),
+                                  ),
+                                  Text(
+                                    "SubDate",
+                                    style:
+                                    TextStyle(fontSize: 14, color: Colors.grey),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
-                        //Date of task
                       ),
                     ),
                   );
