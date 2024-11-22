@@ -147,7 +147,37 @@ class _HomeViewState extends State<HomeView> {
                                 animate: tesing.isNotEmpty ? false : true),
                           ),
                         ),
-                        FadeInUp(from: 30, child: Text(AppStr.doneAllTask),)
+                        FadeInUp(
+                          from: 30,
+                          ///Đặt ra một câu hỏi đó là tại sao cứ phải dùng const trong một số lớp giao diện ví dụ như :
+                          ///child: const Text(AppStr.doneAllTask)
+                          /// -> Tối ưu hóa hiệu suất của ứng dụng khi mỗi lần flutter chạy lại và phải tạo lại instance mới của widget Text đó, mặc dù giá trị của nó không thay đổi.
+                          ///----------------------------------------------------------------------------------------
+                          /// Tiếp theo instance là gì ?
+                          /// Được hiểu là  một bản sao cụ thể của một đối tượng được tạo ra từ một lớp (class).
+                          /// Bạn có thể tưởng tượng lớp như là một bản thiết kế hoặc khuôn mẫu,
+                          /// và khi bạn tạo một instance, bạn đang tạo ra một đối tượng thực tế từ thiết kế đó.
+                          ///-----------------------------------------------------------------------------------------
+                          /// -> Có thể hiểu đơn giản qua ví dụ sau đây :
+                          /// * class Person {
+                          ///   String name;
+                          ///  int age;
+                          ///
+                          ///   Person({required this.name, required this.age});
+                          /// }
+                          /// *
+                          ///----------------------------------------------------------------------------------------
+                          /// -> Person là lớp (class),
+                          /// -> person1 và person2 là instance của lớp Person.
+                          /// -> Mỗi instance có thể có các giá trị riêng biệt (ví dụ name và age),
+                          /// mặc dù chúng đều được tạo từ lớp Person
+                          ///----------------------------------------------------------------------------------------
+                          ///Đơn giản hóa
+                          ///->Lớp: Text (mô tả cách hiển thị văn bản)
+                          ///->Instance: Cái cụ thể mà bạn đang hiển thị trên màn hình (ví dụ: Text("Hello World"))
+
+                          child: const Text(AppStr.doneAllTask),
+                        )
                       ],
                     ),
             )
