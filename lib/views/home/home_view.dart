@@ -21,7 +21,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final List<int> tesing = [];
+  final List<int> tesing = [2,232,51];
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +104,11 @@ class _HomeViewState extends State<HomeView> {
                         // Dismissible khi vuốt trái sang phải có thể xóa
                         return Dismissible(
                           direction: DismissDirection.horizontal,
-                          onDismissed: (_) {},
+                          onDismissed: (direction) {
+                            setState(() {
+                              tesing.removeAt(index);
+                            });
+                          },
                           background: Row(
                             //mainAxisAlignment: MainAxisAlignment.center căn các lớp như icon và text ra giữa khi vuốt
                             mainAxisAlignment: MainAxisAlignment.center,
