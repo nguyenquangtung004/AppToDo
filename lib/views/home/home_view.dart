@@ -124,9 +124,7 @@ class _HomeViewState extends State<HomeView> {
                               ),
                             ],
                           ),
-                          key: Key(
-                            index.toString(),
-                          ),
+                          key: UniqueKey(),
                           child: const TaskWidget(),
                         );
                       },
