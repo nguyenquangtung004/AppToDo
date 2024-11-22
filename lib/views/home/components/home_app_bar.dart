@@ -54,6 +54,7 @@
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              //Menu icon
               Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: IconButton(
@@ -65,6 +66,7 @@
                   ),
                 ),
               ),
+              //Trash Icon
               Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: IconButton(

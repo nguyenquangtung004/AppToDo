@@ -2,6 +2,7 @@ import 'package:app_to_do/untils/app_colors.dart';
 import 'package:app_to_do/untils/constants.dart';
 import 'package:app_to_do/views/home/components/fab.dart';
 import 'package:app_to_do/views/home/components/home_app_bar.dart';
+import 'package:app_to_do/views/home/components/slider_drawer.dart';
 import 'package:app_to_do/views/home/widget/task_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:app_to_do/untils/app_str.dart';
@@ -42,11 +43,11 @@ class _HomeViewState extends State<HomeView> {
       //Body
       body: SliderDrawer(
         key: drawerKey,
+          //isDraggable: false khi để nút này thành true người dùng vuốt sang phải là hiển thị drawer
           isDraggable: false,
           animationDuration: 1000,
-          slider: Container(
-            color: Colors.red,//Thêm màu cho background
-          ),
+          //Drawer
+          slider: CustomDrawer(),
           appBar: HomeAppBar(drawerKey: drawerKey,),
           child: _buildHomeBody(textTheme)
       ),
