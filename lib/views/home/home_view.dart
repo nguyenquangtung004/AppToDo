@@ -1,6 +1,7 @@
 import 'package:app_to_do/untils/app_colors.dart';
 import 'package:app_to_do/untils/constants.dart';
 import 'package:app_to_do/views/home/components/fab.dart';
+import 'package:app_to_do/views/home/components/home_app_bar.dart';
 import 'package:app_to_do/views/home/widget/task_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:app_to_do/untils/app_str.dart';
@@ -27,7 +28,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   //Import thư viện SliderDrawer
-  GlobalKey<SliderDrawerState> dKey = GlobalKey<SliderDrawerState>();
+  GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
   final List<int> tesing = [2, 232, 51];
 
   @override
@@ -40,7 +41,13 @@ class _HomeViewState extends State<HomeView> {
 
       //Body
       body: SliderDrawer(
-          slider: Container(),
+        key: drawerKey,
+          isDraggable: false,
+          animationDuration: 1000,
+          slider: Container(
+            color: Colors.red,//Thêm màu cho background
+          ),
+          appBar: HomeAppBar(drawerKey: drawerKey,),
           child: _buildHomeBody(textTheme)
       ),
     );
