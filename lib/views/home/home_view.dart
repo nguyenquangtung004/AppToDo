@@ -87,7 +87,7 @@ class _HomeViewState extends State<HomeView> {
             SizedBox(
               width: double.infinity,
               height: 745,
-              child: ListView.builder(
+              child:tesing.isNotEmpty? ListView.builder(
                 // padding: EdgeInsets.only(bottom: 80),
                 itemCount: tesing.length,
                 scrollDirection: Axis.vertical,
@@ -119,7 +119,9 @@ class _HomeViewState extends State<HomeView> {
                     child: const TaskWidget(),
                   );
                 },
-              ),
+              ):Column(
+                children: [],
+              )
             )
           ],
         ),
