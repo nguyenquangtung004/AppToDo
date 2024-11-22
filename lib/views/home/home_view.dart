@@ -3,6 +3,7 @@ import 'package:app_to_do/views/home/widget/fab.dart';
 import 'package:flutter/material.dart';
 import 'package:app_to_do/untils/app_str.dart';
 import 'package:app_to_do/extensions/space_exs.dart';
+import 'package:hive/hive.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -66,7 +67,6 @@ class _HomeViewState extends State<HomeView> {
                         "1 of 3 task",
                         style: textTheme.titleMedium,
                       ),
-
                     ],
                   ),
                 ],
@@ -78,6 +78,59 @@ class _HomeViewState extends State<HomeView> {
               child: Divider(
                 thickness: 2,
                 indent: 100,
+              ),
+            ),
+
+            ///Tasks
+            SizedBox(
+              width: double.infinity,
+              height: 745,
+              child: ListView.builder(
+                itemCount: 20,
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  return AnimatedContainer(
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+                    decoration: BoxDecoration(
+                        color: AppColors.primaryColor.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(.1),
+                              offset: const Offset(0, 4),
+                              blurRadius: 10)
+                        ]),
+                    duration: const Duration(milliseconds: 600),
+                    child: ListTile(
+                      ///Check Icon
+                      leading: GestureDetector(
+                        onTap: () {
+                          ///Check or uncheck the task
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 600),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryColor,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.grey, width: .8),
+                          ),
+                          child: Icon(
+                            Icons.check,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+
+                      title: Text(
+                        "Done",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            decoration: TextDecoration.lineThrough),
+                      ),
+                    ),
+                  );
+                },
               ),
             )
           ],
