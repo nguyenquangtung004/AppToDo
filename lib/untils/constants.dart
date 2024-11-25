@@ -1,5 +1,6 @@
 //lottie assets address
 //Khai báo địa chỉ file lottie
+import 'package:app_to_do/main.dart';
 import 'package:app_to_do/untils/app_str.dart';
 import 'package:flutter/material.dart';
 import 'package:ftoast/ftoast.dart';
@@ -44,6 +45,26 @@ dynamic noTaskWarning(BuildContext context) {
     onTapConfirm: () {
       Navigator.of(context).pop();
     },
+  );
+}
 
+///Delete all task from db dialog
+dynamic deleteAllTask(BuildContext context) {
+  return PanaraConfirmDialog.show(
+      context,
+      title: AppStr.areYouSure,
+      message: "Do You really want to delete all tasks? You will no be able to undo this action!",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      onTapConfirm: (){
+        //We will clear all box data using this command later on
+        // BaseWidget.of(context).dataStore.box.clear();
+        Navigator.pop(context);
+      },
+      onTapCancel: (){
+        Navigator.pop(context);
+      },
+      panaraDialogType: PanaraDialogType.error,
+      barrierDismissible: false
   );
 }
