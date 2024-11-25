@@ -30,7 +30,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   //Import thư viện SliderDrawer
   GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
-  final List<int> tesing = [2, 232, 51];
+  final List<int> tesing = [];
 
   @override
   Widget build(BuildContext context) {

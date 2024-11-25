@@ -1,4 +1,5 @@
-  import 'package:flutter/cupertino.dart';
+  import 'package:app_to_do/untils/constants.dart';
+import 'package:flutter/cupertino.dart';
   import 'package:flutter/material.dart';
   import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 
@@ -71,7 +72,7 @@
                 padding: const EdgeInsets.only(left: 30),
                 child: IconButton(
                   onPressed: (){
-                    //
+                    emptyWarning(context);
                   },
                   icon: const Icon(
                     CupertinoIcons.trash_circle,

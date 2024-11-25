@@ -4,6 +4,8 @@ import 'package:app_to_do/views/home/widget/layout_add.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'models/task.dart';
+
 // ///
 // import '../data/hive_data_store.dart';
 // import '../models/task.dart';
@@ -14,18 +16,18 @@ Future<void> main() async {
   await Hive.initFlutter();
 
   /// Register Hive Adapter
-  // Hive.registerAdapter<Task>(TaskAdapter());
+  Hive.registerAdapter<Task>(TaskAdapter());
   //
   // /// Open box
-  // var box = await Hive.openBox<Task>("tasksBox");
+  var box = await Hive.openBox<Task>("tasksBox");
 
   /// Delete data from previous day
   // ignore: avoid_function_literals_in_foreach_calls
-  // box.values.forEach((task) {
-  //   if (task.createdAtTime.day != DateTime.now().day) {
-  //     task.delete();
-  //   } else {}
-  // });
+  box.values.forEach((task) {
+    if (task.createAtTime.day != DateTime.now().day) {
+      task.delete();
+    } else {}
+  });
 
   runApp(BaseWidget(child: const MyApp()));
 }
