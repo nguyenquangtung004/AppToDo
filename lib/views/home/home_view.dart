@@ -1,3 +1,4 @@
+import 'package:app_to_do/models/task.dart';
 import 'package:app_to_do/untils/app_colors.dart';
 import 'package:app_to_do/untils/constants.dart';
 import 'package:app_to_do/views/home/components/fab.dart';
@@ -30,7 +31,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   //Import thư viện SliderDrawer
   GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
-  final List<int> tesing = [];
+  final List<int> tesing = [2, 5, 7];
 
   @override
   Widget build(BuildContext context) {
@@ -42,15 +43,16 @@ class _HomeViewState extends State<HomeView> {
 
       //Body
       body: SliderDrawer(
-        key: drawerKey,
+          key: drawerKey,
           //isDraggable: false khi để nút này thành true người dùng vuốt sang phải là hiển thị drawer
           isDraggable: false,
           animationDuration: 1000,
           //Drawer
           slider: CustomDrawer(),
-          appBar: HomeAppBar(drawerKey: drawerKey,),
-          child: _buildHomeBody(textTheme)
-      ),
+          appBar: HomeAppBar(
+            drawerKey: drawerKey,
+          ),
+          child: _buildHomeBody(textTheme)),
     );
   }
 
@@ -122,11 +124,9 @@ class _HomeViewState extends State<HomeView> {
 
                 /// Task list is not empty
                 ? ListView.builder(
-                    // padding: EdgeInsets.only(bottom: 80),
                     itemCount: tesing.length,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (context, index) {
-                      // Dismissible khi vuốt trái sang phải có thể xóa
                       return Dismissible(
                         direction: DismissDirection.horizontal,
                         onDismissed: (direction) {
@@ -135,7 +135,6 @@ class _HomeViewState extends State<HomeView> {
                           });
                         },
                         background: Row(
-                          //mainAxisAlignment: MainAxisAlignment.center căn các lớp như icon và text ra giữa khi vuốt
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Icon(
@@ -150,7 +149,18 @@ class _HomeViewState extends State<HomeView> {
                           ],
                         ),
                         key: UniqueKey(),
-                        child: const TaskWidget(),
+                        child: TaskWidget(
+                          ///This is only for test
+                          ///We will load tasks from db later one
+                          task: Task(
+                            id: "1",
+                            title: "Home Task",
+                            subTitle: "Cleaning the room",
+                            createAtTime: DateTime.now(),
+                            createAtDate: DateTime.now(),
+                            isCompleted: false,
+                          ),
+                        ),
                       );
                     },
                   )

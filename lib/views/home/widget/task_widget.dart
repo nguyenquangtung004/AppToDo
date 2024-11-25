@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import '../../../models/task.dart';
 import '../../../untils/app_colors.dart';
+import 'package:intl/intl.dart';
+import 'package:app_to_do/views/home/home_view.dart';
+
 
 class TaskWidget extends StatelessWidget {
-  const TaskWidget({Key? key}) : super(key: key);
+  const TaskWidget({Key? key, required this.task}) : super(key: key);
+  final Task task;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +38,9 @@ class TaskWidget extends StatelessWidget {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 600),
               decoration: BoxDecoration(
-                color: AppColors.primaryColor,
+                color:
+                task.isCompleted?
+                AppColors.primaryColor:Colors.white,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.grey, width: .8),
               ),
@@ -47,13 +54,11 @@ class TaskWidget extends StatelessWidget {
           ///Task Title
           title: Padding(
             padding: const EdgeInsets.only(bottom: 5, top: 3),
-
             ///Giãn cách check box với title theo chiều ngang
-
             ///Tiêu đề
             child: Text(
-              "Done",
-              style: TextStyle(
+             task.title,
+              style: const TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w500,
                 // decoration: TextDecoration.lineThrough,

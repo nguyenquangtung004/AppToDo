@@ -17,8 +17,7 @@ class LayoutAdd extends StatefulWidget {
 
 class _LayoutAddState extends State<LayoutAdd> {
   final TextEditingController titleTaskController = TextEditingController();
-  final TextEditingController descrptionTaskController =
-      TextEditingController();
+  final TextEditingController descrptionTaskController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
