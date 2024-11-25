@@ -72,7 +72,9 @@ import 'package:flutter/cupertino.dart';
                 padding: const EdgeInsets.only(left: 30),
                 child: IconButton(
                   onPressed: (){
-                    emptyWarning(context);
+                    // emptyWarning(context);
+                    // updateTaskWarning(context);
+                    noTaskWarning(context);
                   },
                   icon: const Icon(
                     CupertinoIcons.trash_circle,
