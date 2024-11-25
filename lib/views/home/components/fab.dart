@@ -14,6 +14,7 @@ class Fab extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         //We will navigate to task by tapping on this button later one
+        //Thực hiện chuyển màn hình từ Home sang LayoutAdd
         Navigator.push(
           context,
           CupertinoPageRoute(
