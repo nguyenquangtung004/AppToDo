@@ -4,7 +4,7 @@ class AppStr{
   static const String doneAllTask = "You Have Done All Tasks!👌";
   static const String addNewTask = "Add New ";
   static const String updateCurrentTask = "Update ";
-  static const String taskStrnig = "Task";
+  static const String taskString = "Task";
   static const String titleOfTitleTextField = "What are you planing😇?";
   static const String addNote = 'Add Note';
   static const String timeString = "Time";

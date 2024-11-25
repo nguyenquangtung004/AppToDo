@@ -9,23 +9,22 @@ class TaskWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         ///Navigate to TaskView to see Task Details
-
       },
       child: AnimatedContainer(
         margin: EdgeInsets.symmetric(horizontal: 16, vertical: 7),
         //Giãn cách dòng trong list view
         decoration: BoxDecoration(
-            color: AppColors.primaryColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(.1),
-                  offset: const Offset(0, 4),
-                  blurRadius: 10)
-            ]),
+          color: AppColors.primaryColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(.1),
+                offset: const Offset(0, 4),
+                blurRadius: 10)
+          ],
+        ),
         duration: const Duration(milliseconds: 600),
         child: ListTile(
-
           ///Check Icon
           leading: GestureDetector(
             onTap: () {
@@ -69,9 +68,8 @@ class TaskWidget extends StatelessWidget {
             children: [
               Text(
                 "Descrpation",
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w300),
+                style:
+                    TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),
               ),
               Align(
                 // Sau khi thêm Lớp Align thì ngày tháng với sub date được căn ra giữa
@@ -85,13 +83,11 @@ class TaskWidget extends StatelessWidget {
                     children: [
                       Text(
                         "Date",
-                        style:
-                        TextStyle(fontSize: 14, color: Colors.grey),
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                       Text(
                         "SubDate",
-                        style:
-                        TextStyle(fontSize: 14, color: Colors.grey),
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
                       )
                     ],
                   ),
