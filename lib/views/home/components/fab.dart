@@ -18,7 +18,7 @@ class Fab extends StatelessWidget {
         Navigator.push(
           context,
           CupertinoPageRoute(
-            builder: (_) => const LayoutAdd(),
+            builder: (_) => LayoutAdd(task: null,titleTaskController: TextEditingController(),descrptionTaskController: TextEditingController(),),
           ),
         );
       },
