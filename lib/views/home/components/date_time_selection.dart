@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 class DateTimeSelectionWidget extends StatelessWidget {
   const DateTimeSelectionWidget({
-    super.key, required this.onTap, required this.title,
+    super.key, required this.onTap, required this.title, required this.time,
   });
 
   final VoidCallback onTap;
   final String title;
+  final String time; 
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class DateTimeSelectionWidget extends StatelessWidget {
               child: Center(
                 //This text will show date time as time
                 child: Text(
-                  title,
+                  time,
                   style: textTheme.titleSmall,
                 ),
               ),

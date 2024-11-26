@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:app_to_do/untils/app_colors.dart';
 
 import 'package:flutter_cupertino_date_picker_fork/flutter_cupertino_date_picker_fork.dart';
+import 'package:intl/intl.dart';
 
 import '../components/date_time_selection.dart';
 import '../components/rep_textfield.dart';
@@ -24,6 +25,37 @@ class LayoutAdd extends StatefulWidget {
 }
 
 class _LayoutAddState extends State<LayoutAdd> {
+  var title;
+  var subTitle;
+  DateTime? time;
+  DateTime? date;
+
+  //Show Selected time as String Format
+  String showTime(DateTime? time){
+    if(widget.task?.createAtTime == null){
+      if (time ==  null) {
+        return DateFormat('hh:mm a').format(DateTime.now()).toString();
+      }else{
+        return DateFormat('hh:mm a').format(time).toString();
+      }
+    }
+    else{
+      return DateFormat('hh:mm a').format(widget.task!.createAtTime).toString();
+    }
+  }
+
+  //Show Selected time as String Format
+  String showDate(DateTime? date){
+    if (widget.task?.createAtDate == null) {
+      if (date ==  null) {
+        return DateFormat.yMMMEd().format(DateTime.now()).toString();
+      }else{
+        return DateFormat.yMMMEd().format(date).toString();
+      }
+    }else{
+        return DateFormat.yMMMEd().format(widget.task!.createAtDate).toString();
+    }
+  }
   //If any task already Exist return true otherwise false
   bool isTaskAlreadyExist() {
     if (widget.titleTaskController?.text == null &&
@@ -113,11 +145,25 @@ class _LayoutAddState extends State<LayoutAdd> {
           ),
 
           ///Task Title
-          RepTextField(controller: widget.titleTaskController!),
+          RepTextField(
+            controller: widget.titleTaskController!,
+            onFieldSubmitted: (String inputtitle) {
+              title = inputtitle;
+            },
+            onChange: (String inputtitle) {
+              title = inputtitle;
+            },
+          ),
           10.h,
           RepTextField(
             controller: widget.descrptionTaskController,
             isForDescription: true,
+            onFieldSubmitted: (String inputsubtitle) {
+              subTitle = inputsubtitle;
+            },
+            onChange: (String inputsubtitle) {
+              subTitle = inputsubtitle;
+            },
           ),
 
           ///Time Selection
@@ -133,15 +179,21 @@ class _LayoutAddState extends State<LayoutAdd> {
                       print("Selected Index: $selectedIndex");
                     },
                     dateFormat: "HH:mm",
-                    onConfirm: (DateTime selectedTime, List<int> indexList) {
-                      print("Time confirmed: $selectedTime");
-                      print("Index List: $indexList");
+                    onConfirm: (dateTime,________) {
+                      setState(() {
+                        if (widget.task?.createAtTime == null ) {
+                          time = dateTime;
+                        }else{
+                          widget.task!.createAtTime = dateTime;
+                        }
+                      });
                     },
                   ),
                 ),
               );
             },
             title: AppStr.timeString,
+            time:showTime(time),
           ),
 
           DateTimeSelectionWidget(
@@ -150,9 +202,17 @@ class _LayoutAddState extends State<LayoutAdd> {
                   maxDateTime: DateTime(2030, 4, 5),
                   minDateTime: DateTime.now(),
                   // initialDateTime: ,
-                  onConfirm: (dateTime, selectedIndex) {});
+                  onConfirm: (dateTime, ___________) {
+                    setState(() {
+                        if (widget.task?.createAtDate == null ) {
+                          date = dateTime;
+                        }else{
+                          widget.task!.createAtDate = dateTime;
+                        }
+                      });
+                  });
             },
-            title: AppStr.dateString,
+            title: AppStr.dateString, time: showDate(date),
           ),
         ],
       ),
