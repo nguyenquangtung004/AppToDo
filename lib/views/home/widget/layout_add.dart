@@ -107,7 +107,7 @@ class _LayoutAddState extends State<LayoutAdd> {
           RichText(
             text: TextSpan(
               style: textTheme.titleLarge,
-              text: false ? AppStr.addNewTask : AppStr.updateCurrentTask,
+              text: true ? AppStr.addNewTask : AppStr.updateCurrentTask,
               children: const [
                 TextSpan(
                   text: AppStr.taskString,
@@ -193,6 +193,7 @@ class _LayoutAddState extends State<LayoutAdd> {
               );
             },
             title: AppStr.timeString,
+            //For Testing
             time:showTime(time),
           ),
 
@@ -212,7 +213,9 @@ class _LayoutAddState extends State<LayoutAdd> {
                       });
                   });
             },
-            title: AppStr.dateString, time: showDate(date),
+            title: AppStr.dateString,
+            //For Testing
+            time: showDate(date),
           ),
         ],
       ),
