@@ -21,42 +21,50 @@ import 'package:animate_do/animate_do.dart';
 ///Tự import
 import 'package:hive/hive.dart';
 
+///1. Khởi tạo HomeView
+///HomeView: Lớp chính đại diện cho giao diện chính của ứng dụng
+///StatefulWidget: Được dùng để tạo một widget có trạng thái thay đổi.
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
-
+  //_HomeViewState: Quản lý trạng thái và giao diện của HomeView.
   @override
   State<HomeView> createState() => _HomeViewState();
 }
-
+///2. Biến toàn cục
 class _HomeViewState extends State<HomeView> {
+  //drawerKey: Khóa để điều khiển trạng thái của SliderDrawer.
   //Import thư viện SliderDrawer
   GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
+  //tesing: Một danh sách dữ liệu mẫu (mock data) được sử dụng để hiển thị danh sách nhiệm vụ (tasks).
   final List<int> tesing = [2, 5, 7];
 
+///3. Widget build
   @override
   Widget build(BuildContext context) {
+    //TextTheme textTheme: Lấy các kiểu chữ từ theme của ứng dụng.
     TextTheme textTheme = Theme.of(context).textTheme;
+    //Scaffold: Cấu trúc giao diện cơ bản (chứa FloatingActionButton, AppBar, và Body)
     return Scaffold(
       backgroundColor: Colors.white,
-      //Fab
+      //Fab(): Nút nổi để thực hiện hành động (Floating Action Button)
       floatingActionButton: Fab(),
 
       //Body
+      //SliderDrawer: Widget cho phép hiển thị một ngăn kéo trượt từ bên trái.
       body: SliderDrawer(
           key: drawerKey,
-          //isDraggable: false khi để nút này thành true người dùng vuốt sang phải là hiển thị drawer
-          isDraggable: false,
-          animationDuration: 1000,
-          //Drawer
-          slider: CustomDrawer(),
-          appBar: HomeAppBar(
+          isDraggable: false, //isDraggable: false khi để nút này thành true người dùng vuốt sang phải là hiển thị drawer
+          animationDuration: 1000,//animationDuration: Thời gian chạy animation khi mở ngăn kéo
+          slider: CustomDrawer(),//slider: Nội dung của ngăn kéo.
+          appBar: HomeAppBar(//appBar: Thanh tiêu đề tùy chỉnh.
             drawerKey: drawerKey,
           ),
-          child: _buildHomeBody(textTheme)),
+          child: _buildHomeBody(textTheme),//Nội dung chính của giao diện, được xây dựng từ _buildHomeBody
+      ),
     );
   }
 
-  ///Home Body
+  ///4. Widget _buildHomeBody
   Widget _buildHomeBody(TextTheme textTheme) {
     return SizedBox(
       width: double.infinity,
@@ -64,7 +72,8 @@ class _HomeViewState extends State<HomeView> {
       child: Column(
         children: [
           ///Custom App Bar
-          Container(
+          ///4.1. Progress Indicator
+          Container(//Container: Chứa nội dung tiêu đề chính và ProgressIndicator.
             margin: const EdgeInsets.only(top: 60),
             width: double.infinity,
             height: 100,
@@ -76,10 +85,10 @@ class _HomeViewState extends State<HomeView> {
                 const SizedBox(
                   width: 30,
                   height: 30,
-                  child: CircularProgressIndicator(
-                    value: 1 / 3,
-                    backgroundColor: Colors.grey,
-                    valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
+                  child: CircularProgressIndicator(//CircularProgressIndicator: Hiển thị tiến độ hoàn thành nhiệm vụ.
+                    value: 1 / 3,//value: Tiến độ (từ 0.0 đến 1.0). Ví dụ: 1 / 3 là 33%.
+                    backgroundColor: Colors.grey,//backgroundColor: Màu nền của vòng tròn.
+                    valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),//valueColor: Màu của thanh tiến độ.
                   ),
                 ),
                 //Space
@@ -117,17 +126,18 @@ class _HomeViewState extends State<HomeView> {
           ),
 
           ///Tasks
+          ///4.2. Tasks List
           SizedBox(
             width: double.infinity,
             height: 745,
             child: tesing.isNotEmpty
 
                 /// Task list is not empty
-                ? ListView.builder(
+                ? ListView.builder(//ListView.builder: Tạo danh sách nhiệm vụ
                     itemCount: tesing.length,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (context, index) {
-                      return Dismissible(
+                      return Dismissible(//Dismissible: Cho phép vuốt để xóa nhiệm vụ.
                         direction: DismissDirection.horizontal,
                         onDismissed: (direction) {
                           setState(() {
@@ -150,6 +160,7 @@ class _HomeViewState extends State<HomeView> {
                         ),
                         key: UniqueKey(),
                         child: TaskWidget(
+                          // TaskWidget: Widget hiển thị chi tiết một nhiệm vụ.
                           ///This is only for test
                           ///We will load tasks from db later one
                           task: Task(
@@ -184,7 +195,7 @@ class _HomeViewState extends State<HomeView> {
                           width: 200,
                           height: 200,
                           child: Lottie.asset(lottieUrl,
-                              animate: tesing.isNotEmpty ? false : true),
+                              animate: tesing.isNotEmpty ? false : true),//tesing.isNotEmpty: Nếu danh sách trống, hiển thị thông báo và animation Lottie.
                         ),
                       ),
                       //Sub Text

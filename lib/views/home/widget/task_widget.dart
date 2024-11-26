@@ -1,25 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../models/task.dart';
 import '../../../untils/app_colors.dart';
-import 'package:intl/intl.dart';
-import 'package:app_to_do/views/home/home_view.dart';
 
-
-class TaskWidget extends StatelessWidget {
+class TaskWidget extends StatefulWidget {
   const TaskWidget({Key? key, required this.task}) : super(key: key);
   final Task task;
+
+  @override
+  State<TaskWidget> createState() => _TaskWidgetState();
+}
+
+class _TaskWidgetState extends State<TaskWidget> {
+  TextEditingController textEditingControllerForTitle = TextEditingController();
+  TextEditingController textEditingControllerForSubTitle = TextEditingController();
+  // Biến trạng thái cho task completion
+  late bool isCompleted;
+
+  @override
+  void initState() {
+    super.initState();
+    textEditingControllerForTitle.text = widget.task.title;
+    textEditingControllerForSubTitle.text = widget.task.subTitle;
+    isCompleted = widget.task.isCompleted;  // Khởi tạo trạng thái
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    textEditingControllerForTitle.dispose();
+    textEditingControllerForSubTitle.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        ///Navigate to TaskView to see Task Details
+        /// Điều hướng đến TaskView để xem chi tiết Task
       },
       child: AnimatedContainer(
-        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 7),
-        //Giãn cách dòng trong list view
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
         decoration: BoxDecoration(
-          color: AppColors.primaryColor.withOpacity(0.1),
+          // Thay đổi màu nền khi trạng thái hoàn thành thay đổi
+          color: isCompleted
+              ? const Color.fromARGB(154, 119, 144, 229)
+              : Colors.white,
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
@@ -30,69 +56,76 @@ class TaskWidget extends StatelessWidget {
         ),
         duration: const Duration(milliseconds: 600),
         child: ListTile(
-          ///Check Icon
+          // Check Icon
           leading: GestureDetector(
             onTap: () {
-              ///Check or uncheck the task
+             setState(() {
+                isCompleted = !isCompleted; // Thay đổi trạng thái
+                widget.task.isCompleted = isCompleted; 
+              });
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 600),
               decoration: BoxDecoration(
-                color:
-                task.isCompleted?
-                AppColors.primaryColor:Colors.white,
+                color: isCompleted ? AppColors.primaryColor : Colors.white,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.grey, width: .8),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.check,
-                color: Colors.white,
+                color: isCompleted ? Colors.white : Colors.transparent,
               ),
             ),
           ),
 
-          ///Task Title
+          // Task Title
           title: Padding(
             padding: const EdgeInsets.only(bottom: 5, top: 3),
-            ///Giãn cách check box với title theo chiều ngang
-            ///Tiêu đề
             child: Text(
-             task.title,
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-                // decoration: TextDecoration.lineThrough,
+              textEditingControllerForTitle.text,
+              style: TextStyle(
+                color: isCompleted ? Colors.white : Colors.black,
+                fontWeight: FontWeight.bold,
+                decoration:
+                    isCompleted ? TextDecoration.lineThrough : null,
               ),
             ),
           ),
 
-          ///Task Decoration
+          // Task Subtitle
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            // Điều chỉnh descoration xuống dưới title
             children: [
               Text(
-                "Descrpation",
-                style:
-                    TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),
+                textEditingControllerForSubTitle.text,
+                style: TextStyle(
+                  color: isCompleted ? Colors.white : Colors.black,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.bold,
+                  decoration:
+                      isCompleted ? TextDecoration.lineThrough : null,
+                ),
               ),
               Align(
-                // Sau khi thêm Lớp Align thì ngày tháng với sub date được căn ra giữa
-                //Xong alignment: Alignment.centerRight để căn ra bên phải của app
                 alignment: Alignment.centerRight,
                 child: Padding(
-                  //Xong dùng lớp padding để tạo khoảng cách với lề của của list title
                   padding: const EdgeInsets.only(bottom: 10, top: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Date",
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                        DateFormat('hh:mm a').format(widget.task.createAtTime),
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: isCompleted ? Colors.black : Colors.grey,
+                            fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        "SubDate",
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                        DateFormat.yMMMEd().format(widget.task.createAtDate),
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: isCompleted ? Colors.black : Colors.grey,
+                            fontWeight: FontWeight.bold),
                       )
                     ],
                   ),
