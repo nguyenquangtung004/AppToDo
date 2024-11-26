@@ -56,6 +56,18 @@ class _LayoutAddState extends State<LayoutAdd> {
         return DateFormat.yMMMEd().format(widget.task!.createAtDate).toString();
     }
   }
+  //Show Selected Date As DateFormat for init Time
+  DateTime showDateAsDateTime(DateTime? date){
+    if (widget.task?.createAtDate == null) {
+      if (date == null) {
+        return DateTime.now();
+      } else {
+        return date;
+      }
+    } else {
+      return widget.task!.createAtDate;
+    }
+  }
   //If any task already Exist return true otherwise false
   bool isTaskAlreadyExist() {
     if (widget.titleTaskController?.text == null &&
@@ -179,6 +191,7 @@ class _LayoutAddState extends State<LayoutAdd> {
                       print("Selected Index: $selectedIndex");
                     },
                     dateFormat: "HH:mm",
+                    // initialDateTime: ,
                     onConfirm: (dateTime,________) {
                       setState(() {
                         if (widget.task?.createAtTime == null ) {
@@ -194,7 +207,7 @@ class _LayoutAddState extends State<LayoutAdd> {
             },
             title: AppStr.timeString,
             //For Testing
-            time:showTime(time),
+            time:showTime(time), isTime: true,
           ),
 
           DateTimeSelectionWidget(
@@ -202,7 +215,7 @@ class _LayoutAddState extends State<LayoutAdd> {
               DatePicker.showDatePicker(context,
                   maxDateTime: DateTime(2030, 4, 5),
                   minDateTime: DateTime.now(),
-                  // initialDateTime: ,
+                  initialDateTime: showDateAsDateTime(date),
                   onConfirm: (dateTime, ___________) {
                     setState(() {
                         if (widget.task?.createAtDate == null ) {
@@ -215,7 +228,7 @@ class _LayoutAddState extends State<LayoutAdd> {
             },
             title: AppStr.dateString,
             //For Testing
-            time: showDate(date),
+            time: showDate(date), isTime: true,
           ),
         ],
       ),

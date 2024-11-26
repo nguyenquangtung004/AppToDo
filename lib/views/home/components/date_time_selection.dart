@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 
 class DateTimeSelectionWidget extends StatelessWidget {
   const DateTimeSelectionWidget({
-    super.key, required this.onTap, required this.title, required this.time,
+    super.key, 
+    required this.onTap, 
+    required this.title, 
+    required this.time, 
+    this.isTime=false,
   });
 
   final VoidCallback onTap;
   final String title;
   final String time; 
+  final bool isTime;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +43,7 @@ class DateTimeSelectionWidget extends StatelessWidget {
             ),
             Container(
               margin: const EdgeInsets.only(right: 10),
-              width: 120,
+              width: isTime? 120:80,
               height: 35,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
