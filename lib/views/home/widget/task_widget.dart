@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../models/task.dart';
 import '../../../untils/app_colors.dart';
+import '../widget/layout_add.dart';
 
 class TaskWidget extends StatefulWidget {
   const TaskWidget({Key? key, required this.task}) : super(key: key);
@@ -14,6 +15,7 @@ class TaskWidget extends StatefulWidget {
 class _TaskWidgetState extends State<TaskWidget> {
   TextEditingController textEditingControllerForTitle = TextEditingController();
   TextEditingController textEditingControllerForSubTitle = TextEditingController();
+
   // Biến trạng thái cho task completion
   late bool isCompleted;
 
@@ -22,8 +24,7 @@ class _TaskWidgetState extends State<TaskWidget> {
     super.initState();
     textEditingControllerForTitle.text = widget.task.title;
     textEditingControllerForSubTitle.text = widget.task.subTitle;
-    isCompleted = widget.task.isCompleted;  // Khởi tạo trạng thái
-    super.initState();
+    isCompleted = widget.task.isCompleted; // Khởi tạo trạng thái
   }
 
   @override
@@ -37,7 +38,17 @@ class _TaskWidgetState extends State<TaskWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        /// Điều hướng đến TaskView để xem chi tiết Task
+        // Điều hướng đến LayoutAdd khi nhấn vào toàn bộ Task
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => LayoutAdd(
+              task: widget.task,
+              titleTaskController: textEditingControllerForTitle,
+              descrptionTaskController: textEditingControllerForSubTitle,
+            ),
+          ),
+        );
       },
       child: AnimatedContainer(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
@@ -59,9 +70,9 @@ class _TaskWidgetState extends State<TaskWidget> {
           // Check Icon
           leading: GestureDetector(
             onTap: () {
-             setState(() {
+              setState(() {
                 isCompleted = !isCompleted; // Thay đổi trạng thái
-                widget.task.isCompleted = isCompleted; 
+                widget.task.isCompleted = isCompleted;
               });
             },
             child: AnimatedContainer(
@@ -79,15 +90,29 @@ class _TaskWidgetState extends State<TaskWidget> {
           ),
 
           // Task Title
-          title: Padding(
-            padding: const EdgeInsets.only(bottom: 5, top: 3),
-            child: Text(
-              textEditingControllerForTitle.text,
-              style: TextStyle(
-                color: isCompleted ? Colors.white : Colors.black,
-                fontWeight: FontWeight.bold,
-                decoration:
-                    isCompleted ? TextDecoration.lineThrough : null,
+          title: GestureDetector(
+            onTap: () {
+              // Điều hướng đến màn hình cập nhật Task khi nhấn vào tiêu đề
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => LayoutAdd(
+                    task: widget.task,
+                    titleTaskController: TextEditingController(text: widget.task.title),
+                    descrptionTaskController: TextEditingController(text: widget.task.subTitle),
+                  ),
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 5, top: 3),
+              child: Text(
+                textEditingControllerForTitle.text,
+                style: TextStyle(
+                  color: isCompleted ? Colors.white : Colors.black,
+                  fontWeight: FontWeight.bold,
+                  decoration: isCompleted ? TextDecoration.lineThrough : null,
+                ),
               ),
             ),
           ),
@@ -102,8 +127,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                   color: isCompleted ? Colors.white : Colors.black,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.bold,
-                  decoration:
-                      isCompleted ? TextDecoration.lineThrough : null,
+                  decoration: isCompleted ? TextDecoration.lineThrough : null,
                 ),
               ),
               Align(

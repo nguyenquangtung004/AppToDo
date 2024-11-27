@@ -32,32 +32,18 @@ class LayoutAdd extends StatefulWidget {
 }
 
 class _LayoutAddState extends State<LayoutAdd> {
-  String? title;
-  String? subTitle;
   DateTime? time;
   DateTime? date;
 
-  /// Hiển thị thời gian đã chọn dưới dạng chuỗi
-  String showTime(DateTime? time) {
-    if (widget.task?.createAtTime == null) {
-      return DateFormat('hh:mm a').format(time ?? DateTime.now());
-    } else {
-      return DateFormat('hh:mm a').format(widget.task!.createAtTime);
+  @override
+  void initState() {
+    super.initState();
+    if (widget.task != null) {
+      time = widget.task!.createAtTime;
+      date = widget.task!.createAtDate;
+      widget.titleTaskController.text = widget.task!.title;
+      widget.descrptionTaskController.text = widget.task!.subTitle;
     }
-  }
-
-  /// Hiển thị ngày đã chọn dưới dạng chuỗi
-  String showDate(DateTime? date) {
-    if (widget.task?.createAtDate == null) {
-      return DateFormat.yMMMEd().format(date ?? DateTime.now());
-    } else {
-      return DateFormat.yMMMEd().format(widget.task!.createAtDate);
-    }
-  }
-
-  /// Hiển thị ngày dưới dạng `DateTime` cho khởi tạo thời gian
-  DateTime showDateAsDateTime(DateTime? date) {
-    return widget.task?.createAtDate ?? date ?? DateTime.now();
   }
 
   /// Kiểm tra xem nhiệm vụ có trống hay không
@@ -65,28 +51,59 @@ class _LayoutAddState extends State<LayoutAdd> {
     return widget.titleTaskController.text.isEmpty || widget.descrptionTaskController.text.isEmpty;
   }
 
+  /// Hiển thị thời gian đã chọn dưới dạng chuỗi
+  String showTime(DateTime? time) {
+    if (time == null) {
+      return DateFormat('hh:mm a').format(DateTime.now());
+    } else {
+      return DateFormat('hh:mm a').format(time);
+    }
+  }
+
+  /// Hiển thị ngày đã chọn dưới dạng chuỗi
+  String showDate(DateTime? date) {
+    if (date == null) {
+      return DateFormat.yMMMEd().format(DateTime.now());
+    } else {
+      return DateFormat.yMMMEd().format(date);
+    }
+  }
+
   /// Hàm chính để tạo hoặc cập nhật nhiệm vụ
   void isTaskAlreadyExistUpdateOrCreate() {
-    // Nếu dữ liệu của Task không trống thì tiến hành cập nhật
+    // Lấy giá trị mới từ TextField
+    String updatedTitle = widget.titleTaskController.text.trim();
+    String updatedSubTitle = widget.descrptionTaskController.text.trim();
+
+    // Kiểm tra xem tiêu đề hoặc mô tả có trống không
+    if (updatedTitle.isEmpty || updatedSubTitle.isEmpty) {
+      emptyWarning(context);
+      print("Title or Subtitle is empty.");
+      return;
+    }
+
     if (widget.task != null) {
       try {
-        widget.task!.title = title ?? widget.task!.title;
-        widget.task!.subTitle = subTitle ?? widget.task!.subTitle;
-        widget.task!.createAtTime = time ?? widget.task!.createAtTime;
-        widget.task!.createAtDate = date ?? widget.task!.createAtDate;
+        // Cập nhật nhiệm vụ bằng cách tạo một nhiệm vụ mới và thay thế
+        var newTask = Task.create(
+          title: updatedTitle,
+          subtitle: updatedSubTitle,
+          createAtTime: time ?? widget.task!.createAtTime,
+          createAtDate: date ?? widget.task!.createAtDate,
+        );
 
-        widget.task!.save(); // Lưu cập nhật vào box Hive
-        print("Task saved/updated successfully.");
+        var box = Hive.box<Task>('taskBox');
+        box.put(widget.task!.key, newTask); // Thay thế nhiệm vụ cũ bằng nhiệm vụ mới
+        print("Task updated successfully.");
       } catch (e) {
-        updateTaskWarning(context);
         print("Error saving/updating task: $e");
+        updateTaskWarning(context);
       }
-    } 
-    // Nếu không có Task hiện tại, tiến hành tạo mới
-    else if (title != null && subTitle != null) {
+    } else {
+      // Tạo một nhiệm vụ mới
       var task = Task.create(
-        title: title!,
-        subtitle: subTitle!,
+        title: updatedTitle,
+        subtitle: updatedSubTitle,
         createAtTime: time ?? DateTime.now(),
         createAtDate: date ?? DateTime.now(),
       );
@@ -94,11 +111,6 @@ class _LayoutAddState extends State<LayoutAdd> {
       var box = Hive.box<Task>('taskBox');
       box.add(task); // Thêm Task mới vào Hive
       print("New Task added successfully: ${task.title}");
-    } 
-    // Nếu title hoặc subTitle bị trống thì hiện cảnh báo
-    else {
-      emptyWarning(context);
-      print("Title or Subtitle is empty.");
     }
   }
 
@@ -174,10 +186,14 @@ class _LayoutAddState extends State<LayoutAdd> {
           RepTextField(
             controller: widget.titleTaskController,
             onFieldSubmitted: (String inputTitle) {
-              title = inputTitle;
+              setState(() {
+                widget.titleTaskController.text = inputTitle;
+              });
             },
             onChange: (String inputTitle) {
-              title = inputTitle;
+              setState(() {
+                widget.titleTaskController.text = inputTitle;
+              });
             },
           ),
           10.h,
@@ -185,10 +201,14 @@ class _LayoutAddState extends State<LayoutAdd> {
             controller: widget.descrptionTaskController,
             isForDescription: true,
             onFieldSubmitted: (String inputSubTitle) {
-              subTitle = inputSubTitle;
+              setState(() {
+                widget.descrptionTaskController.text = inputSubTitle;
+              });
             },
             onChange: (String inputSubTitle) {
-              subTitle = inputSubTitle;
+              setState(() {
+                widget.descrptionTaskController.text = inputSubTitle;
+              });
             },
           ),
           DateTimeSelectionWidget(
@@ -221,7 +241,7 @@ class _LayoutAddState extends State<LayoutAdd> {
                 context,
                 maxDateTime: DateTime(2030, 4, 5),
                 minDateTime: DateTime.now(),
-                initialDateTime: showDateAsDateTime(date),
+                initialDateTime: date ?? DateTime.now(),
                 onConfirm: (dateTime, _) {
                   setState(() {
                     date = dateTime;
@@ -245,7 +265,6 @@ class _LayoutAddState extends State<LayoutAdd> {
       child: Row(
         mainAxisAlignment: isTaskAlreadyExist() ? MainAxisAlignment.center : MainAxisAlignment.spaceEvenly,
         children: [
-          // Nút xóa Task hiện tại (nếu đã tồn tại)
           if (widget.task != null)
             MaterialButton(
               onPressed: () {
@@ -265,7 +284,6 @@ class _LayoutAddState extends State<LayoutAdd> {
               ),
               height: 55,
             ),
-          // Nút thêm hoặc cập nhật nhiệm vụ
           MaterialButton(
             onPressed: () {
               isTaskAlreadyExistUpdateOrCreate();
@@ -275,9 +293,9 @@ class _LayoutAddState extends State<LayoutAdd> {
             minWidth: 150,
             color: AppColors.primaryColor,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            child: const Text(
-              AppStr.addTaskString,
-              style: TextStyle(color: Colors.white),
+            child: Text(
+              widget.task == null ? AppStr.addTaskString : AppStr.updateTaskString,
+              style: const TextStyle(color: Colors.white),
             ),
             height: 55,
           ),
