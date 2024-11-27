@@ -4,34 +4,55 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-///All the [CRUD] operation method for hiveDB
+/// Tất cả các phương thức [CRUD] cho HiveDB
 class HiveDataStore {
   static const boxName = 'taskBox';
+  // Tạo box với kiểu dữ liệu <Task> để lưu trữ
+  late final Box<Task> box;
+  /// Khởi tạo HiveDataStore, đảm bảo mở hộp trước khi sử dụng.
+  HiveDataStore() {
+    _initBox();
+  }
+    Future<void> _initBox() async {
+    // Đảm bảo hộp đã mở trước khi sử dụng
+    if (!Hive.isBoxOpen(boxName)) {
+      box = await Hive.openBox<Task>(boxName);
+    } else {
+      box = Hive.box<Task>(boxName);
+    }
+  }
 
-  final Box<Task> box = Hive.box<Task>(boxName);
-
-  ///Add New Task To Box
-  Future<void> addTask ({required Task task}) async{
+  /// Thêm Task Mới vào Box
+  /// [task] là đối tượng `Task` cần thêm vào.
+  Future<void> addTask({required Task task}) async {
+    // Ghi chú: Sử dụng `task.id` làm key cho task mới.
     await box.put(task.id, task);
   }
 
-  ///Show Task
-  Future<Task?> getTask({required String id })async{
+
+  /// Lấy Task Dựa Theo ID
+  /// [id] là `String` đại diện cho ID của `Task`.
+  Future<Task?> getTask({required String id}) async {
+    // Trả về `Task` nếu tìm thấy theo `id`, hoặc null nếu không tìm thấy
     return box.get(id);
   }
 
-  ///Update Task
-  Future<void> updateTask({required Task task})async{
-    await task.save();
+ /// Cập Nhật Task
+  /// [task] là đối tượng `Task` cần cập nhật.
+  Future<void> updateTask({required Task task}) async {
+    // Lưu dữ liệu của task lại sau khi đã thay đổi
+    // Ghi chú: Đảm bảo `task` đã được sửa đổi trước khi gọi `save()`.
+    await box.put(task.id, task);
   }
 
-  ///Delete Task
-  Future<void> deleteTask ({required Task task})async{
-    await task.delete();
+  /// Xóa Task
+  /// [task] là đối tượng `Task` cần xóa.
+  Future<void> deleteTask({required Task task}) async {
+    // Xóa task dựa trên `id`
+    await box.delete(task.id);
   }
 
-  ///Listen to Box Changes
-  ///Using this method we will listen to box changes and update the
-  ///UI accordingly
+   /// Lắng Nghe Thay Đổi Trong Box
+  /// Sử dụng phương thức này để lắng nghe các thay đổi của hộp và cập nhật UI tương ứng.
   ValueListenable<Box<Task>> listToTask() => box.listenable();
 }

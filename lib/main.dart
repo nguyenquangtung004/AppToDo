@@ -1,48 +1,51 @@
-
-import 'package:app_to_do/views/home/home_view.dart';
-import 'package:app_to_do/views/home/widget/layout_add.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'models/task.dart';
-
-// ///
-// import '../data/hive_data_store.dart';
-// import '../models/task.dart';
-// import '../view/home/home_view.dart';
+/// Import các model và widget cần thiết
+import 'data/hive_data_store.dart'; // Đảm bảo bạn có lớp này trong thư mục data
+import './models/task.dart'; // Đảm bảo đường dẫn đúng với model Task của bạn
+import './views/home/home_view.dart'; // Đảm bảo đường dẫn đúng với widget HomeView của bạn
 
 Future<void> main() async {
-  /// Initial Hive DB
+  /// Đảm bảo khởi tạo các widget và Hive
+  WidgetsFlutterBinding.ensureInitialized();
+
+  /// Khởi tạo Hive
   await Hive.initFlutter();
 
-  /// Register Hive Adapter
-  Hive.registerAdapter<Task>(TaskAdapter());
-  //
-  // /// Open box
-  var box = await Hive.openBox<Task>("tasksBox");
+  /// Đăng ký adapter cho Task
+  Hive.registerAdapter(TaskAdapter());
 
-  /// Delete data from previous day
-  // ignore: avoid_function_literals_in_foreach_calls
-  box.values.forEach((task) {
-    if (task.createAtTime.day != DateTime.now().day) {
-      task.delete();
-    } else {}
-  });
+  /// Mở box Hive
+  try {
+    await Hive.openBox<Task>('taskBox');
+    debugPrint('Hive box opened successfully');
+  } catch (e) {
+    debugPrint('Error opening Hive box: $e');
+  }
 
+  /// Chạy ứng dụng với BaseWidget
   runApp(BaseWidget(child: const MyApp()));
 }
 
+/// BaseWidget để quản lý các dịch vụ toàn cục
+/// Mục tiêu của `BaseWidget` là để cung cấp `HiveDataStore` cho toàn bộ ứng dụng.
 class BaseWidget extends InheritedWidget {
   BaseWidget({Key? key, required this.child}) : super(key: key, child: child);
-  // final HiveDataStore dataStore = HiveDataStore();
+
   final Widget child;
 
+  /// Tạo instance của HiveDataStore (đảm bảo bạn đã tạo lớp này)
+  final HiveDataStore dataStore = HiveDataStore();
+
+  /// Lấy instance của BaseWidget
+  /// Hàm này giúp truy cập `HiveDataStore` từ bất kỳ vị trí nào trong widget tree
   static BaseWidget of(BuildContext context) {
     final base = context.dependOnInheritedWidgetOfExactType<BaseWidget>();
     if (base != null) {
       return base;
     } else {
-      throw StateError('Could not find ancestor widget of type BaseWidget');
+      throw StateError('Không tìm thấy widget BaseWidget trong context.');
     }
   }
 
@@ -52,6 +55,7 @@ class BaseWidget extends InheritedWidget {
   }
 }
 
+/// MyApp là lớp chính của ứng dụng
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -59,7 +63,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Hive Todo App',
+      title: 'Hive Todo App',
       theme: ThemeData(
         textTheme: const TextTheme(
           displayLarge: TextStyle(
@@ -100,8 +104,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomeView(),
-      // home: const LayoutAdd(),
+      home: const HomeView(), // Mặc định chuyển đến `HomeView`
     );
   }
 }

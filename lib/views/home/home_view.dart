@@ -1,3 +1,4 @@
+import 'package:app_to_do/main.dart';
 import 'package:app_to_do/models/task.dart';
 import 'package:app_to_do/untils/app_colors.dart';
 import 'package:app_to_do/untils/constants.dart';
@@ -5,97 +6,100 @@ import 'package:app_to_do/views/home/components/fab.dart';
 import 'package:app_to_do/views/home/components/home_app_bar.dart';
 import 'package:app_to_do/views/home/components/slider_drawer.dart';
 import 'package:app_to_do/views/home/widget/task_widget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:app_to_do/untils/app_str.dart';
 import 'package:app_to_do/extensions/space_exs.dart';
 
-///Tự import
+/// Tự import
 import 'package:lottie/lottie.dart';
 
-///Tự import
+/// Tự import
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 
-///Tự import
+/// Tự import
 import 'package:animate_do/animate_do.dart';
 
-///Tự import
+/// Tự import
 import 'package:hive/hive.dart';
 
-///1. Khởi tạo HomeView
-///HomeView: Lớp chính đại diện cho giao diện chính của ứng dụng
-///StatefulWidget: Được dùng để tạo một widget có trạng thái thay đổi.
+/// 1. Khởi tạo HomeView
+/// HomeView: Lớp chính đại diện cho giao diện chính của ứng dụng
+/// StatefulWidget: Được dùng để tạo một widget có trạng thái thay đổi.
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
-  //_HomeViewState: Quản lý trạng thái và giao diện của HomeView.
+
+  /// _HomeViewState: Quản lý trạng thái và giao diện của HomeView.
   @override
   State<HomeView> createState() => _HomeViewState();
 }
-///2. Biến toàn cục
-class _HomeViewState extends State<HomeView> {
-  //drawerKey: Khóa để điều khiển trạng thái của SliderDrawer.
-  //Import thư viện SliderDrawer
-  GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
-  //tesing: Một danh sách dữ liệu mẫu (mock data) được sử dụng để hiển thị danh sách nhiệm vụ (tasks).
-  final List<int> tesing = [2, 5, 7];
 
-///3. Widget build
+/// 2. Biến toàn cục
+class _HomeViewState extends State<HomeView> {
+  // drawerKey: Khóa để điều khiển trạng thái của SliderDrawer.
+  GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
+
+  /// 3. Widget build
   @override
   Widget build(BuildContext context) {
-    //TextTheme textTheme: Lấy các kiểu chữ từ theme của ứng dụng.
+    // Lấy `BaseWidget` từ context
+    final base = BaseWidget.of(context);
+    // Lấy `TextTheme` từ `ThemeData` của ứng dụng
     TextTheme textTheme = Theme.of(context).textTheme;
-    //Scaffold: Cấu trúc giao diện cơ bản (chứa FloatingActionButton, AppBar, và Body)
-    return Scaffold(
-      backgroundColor: Colors.white,
-      //Fab(): Nút nổi để thực hiện hành động (Floating Action Button)
-      floatingActionButton: Fab(),
+    // `ValueListenable` để lắng nghe các thay đổi từ box của Hive
+    ValueListenable<Box<Task>> valueListenable = base.dataStore.listToTask();
 
-      //Body
-      //SliderDrawer: Widget cho phép hiển thị một ngăn kéo trượt từ bên trái.
-      body: SliderDrawer(
-          key: drawerKey,
-          isDraggable: false, //isDraggable: false khi để nút này thành true người dùng vuốt sang phải là hiển thị drawer
-          animationDuration: 1000,//animationDuration: Thời gian chạy animation khi mở ngăn kéo
-          slider: CustomDrawer(),//slider: Nội dung của ngăn kéo.
-          appBar: HomeAppBar(//appBar: Thanh tiêu đề tùy chỉnh.
-            drawerKey: drawerKey,
+    return ValueListenableBuilder(
+      valueListenable: valueListenable,
+      builder: (ctx, Box<Task> box, Widget? child) {
+        // Lấy danh sách `tasks` từ box
+        var tasks = box.values.toList();
+
+        return Scaffold(
+          backgroundColor: Colors.white,
+          floatingActionButton: Fab(), // Nút nổi để thực hiện hành động
+          body: SliderDrawer(
+            key: drawerKey,
+            isDraggable: false,
+            animationDuration: 1000,
+            slider: CustomDrawer(), // slider: Nội dung của ngăn kéo.
+            appBar: HomeAppBar(
+              drawerKey: drawerKey,
+            ),
+            child: _buildHomeBody(textTheme, box), // Nội dung chính của giao diện
           ),
-          child: _buildHomeBody(textTheme),//Nội dung chính của giao diện, được xây dựng từ _buildHomeBody
-      ),
+        );
+      },
     );
   }
 
-  ///4. Widget _buildHomeBody
-  Widget _buildHomeBody(TextTheme textTheme) {
+  /// 4. Widget _buildHomeBody
+  Widget _buildHomeBody(TextTheme textTheme, Box<Task> box) {
+    List<Task> tasks = box.values.toList();
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
       child: Column(
         children: [
-          ///Custom App Bar
-          ///4.1. Progress Indicator
-          Container(//Container: Chứa nội dung tiêu đề chính và ProgressIndicator.
+          /// Custom App Bar
+          Container(
             margin: const EdgeInsets.only(top: 60),
             width: double.infinity,
             height: 100,
-            // color: Colors.red,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                //Progress Indicator
-                const SizedBox(
+                // Progress Indicator
+                SizedBox(
                   width: 30,
                   height: 30,
-                  child: CircularProgressIndicator(//CircularProgressIndicator: Hiển thị tiến độ hoàn thành nhiệm vụ.
-                    value: 1 / 3,//value: Tiến độ (từ 0.0 đến 1.0). Ví dụ: 1 / 3 là 33%.
-                    backgroundColor: Colors.grey,//backgroundColor: Màu nền của vòng tròn.
-                    valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),//valueColor: Màu của thanh tiến độ.
+                  child: CircularProgressIndicator(
+                    value: tasks.isEmpty ? 0 : tasks.where((task) => task.isCompleted).length / tasks.length,
+                    backgroundColor: Colors.grey,
+                    valueColor: AlwaysStoppedAnimation(AppColors.primaryColor),
                   ),
                 ),
-                //Space
-                const SizedBox(
-                  width: 25,
-                ),
-                //Top Level Task Info
+                const SizedBox(width: 25),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -104,11 +108,9 @@ class _HomeViewState extends State<HomeView> {
                       AppStr.mainTitle,
                       style: textTheme.displayLarge,
                     ),
-                    const SizedBox(
-                      height: 3,
-                    ),
+                    const SizedBox(height: 3),
                     Text(
-                      "1 of 3 task",
+                      "${tasks.where((task) => task.isCompleted).length} of ${tasks.length} tasks",
                       style: textTheme.titleMedium,
                     ),
                   ],
@@ -125,115 +127,90 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
 
-          ///Tasks
-          ///4.2. Tasks List
-          SizedBox(
-            width: double.infinity,
-            height: 745,
-            child: tesing.isNotEmpty
-
-                /// Task list is not empty
-                ? ListView.builder(//ListView.builder: Tạo danh sách nhiệm vụ
-                    itemCount: tesing.length,
+          /// Tasks List
+          Expanded(
+            child: tasks.isNotEmpty
+                ? ListView.builder(
+                    itemCount: tasks.length,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (context, index) {
-                      return Dismissible(//Dismissible: Cho phép vuốt để xóa nhiệm vụ.
+                      var task = tasks[index];
+                      return Dismissible(
+                        key: Key(task.id), // Sử dụng `task.id` để làm khóa duy nhất
                         direction: DismissDirection.horizontal,
-                        onDismissed: (direction) {
+                        confirmDismiss: (direction) async {
+                          // Hiển thị hộp thoại xác nhận trước khi xóa
+                          return await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Xác nhận xóa"),
+                                content: const Text("Bạn có chắc chắn muốn xóa nhiệm vụ này không?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false); // Hủy bỏ
+                                    },
+                                    child: const Text("Hủy"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true); // Xác nhận xóa
+                                    },
+                                    child: const Text("Xóa"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        onDismissed: (direction) async {
+                          // Xóa nhiệm vụ khỏi Hive
+                          await box.deleteAt(index);
+
+                          // Sau khi xóa, cần cập nhật giao diện
                           setState(() {
-                            tesing.removeAt(index);
+                            tasks.removeAt(index);
                           });
                         },
-                        background: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.delete_outline,
-                              color: Colors.grey,
-                            ),
-                            8.w,
-                            const Text(
-                              AppStr.deletedTask,
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                        key: UniqueKey(),
-                        child: TaskWidget(
-                          // TaskWidget: Widget hiển thị chi tiết một nhiệm vụ.
-                          ///This is only for test
-                          ///We will load tasks from db later one
-                          task: Task(
-                            id: "1",
-                            title: "Home Task",
-                            subTitle: "Cleaning the room",
-                            createAtTime: DateTime.now(),
-                            createAtDate: DateTime.now(),
-                            isCompleted: false,
+                        background: Container(
+                          color: Colors.redAccent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.delete_outline, color: Colors.white),
+                              const SizedBox(width: 8),
+                              const Text(
+                                AppStr.deletedTask,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
                           ),
                         ),
+                        child: TaskWidget(task: task), // Hiển thị chi tiết nhiệm vụ
                       );
                     },
                   )
-
-                /// Task list is empty
                 : Column(
-                    //Căn animation ra giữa
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      //Phải tự import bằng tay lottie
-                      //Xong sau đó tạo ra file space_exs.dart
-                      //Khai báo vào trong đó lottieUrl
-                      //rồi lên testing để tảo ra danh sách rỗng kiểm tra xem đã thực hiện thành công lottie chưa
-                      //nếu Animate mà nó không rỗng
-
-                      //Thêm lớp FadeInUp để làm animation chuyển động chậm
-                      ///Lottie Anime
                       FadeIn(
                         child: SizedBox(
-                          //Thay đổi kích thước animation
                           width: 200,
                           height: 200,
-                          child: Lottie.asset(lottieUrl,
-                              animate: tesing.isNotEmpty ? false : true),//tesing.isNotEmpty: Nếu danh sách trống, hiển thị thông báo và animation Lottie.
+                          child: Lottie.asset(
+                            lottieUrl,
+                            animate: true,
+                          ),
                         ),
                       ),
-                      //Sub Text
                       FadeInUp(
                         from: 30,
-
-                        ///Đặt ra một câu hỏi đó là tại sao cứ phải dùng const trong một số lớp giao diện ví dụ như :
-                        ///child: const Text(AppStr.doneAllTask)
-                        /// -> Tối ưu hóa hiệu suất của ứng dụng khi mỗi lần flutter chạy lại và phải tạo lại instance mới của widget Text đó, mặc dù giá trị của nó không thay đổi.
-                        ///----------------------------------------------------------------------------------------
-                        /// Tiếp theo instance là gì ?
-                        /// Được hiểu là  một bản sao cụ thể của một đối tượng được tạo ra từ một lớp (class).
-                        /// Bạn có thể tưởng tượng lớp như là một bản thiết kế hoặc khuôn mẫu,
-                        /// và khi bạn tạo một instance, bạn đang tạo ra một đối tượng thực tế từ thiết kế đó.
-                        ///-----------------------------------------------------------------------------------------
-                        /// -> Có thể hiểu đơn giản qua ví dụ sau đây :
-                        /// * class Person {
-                        ///   String name;
-                        ///  int age;
-                        ///
-                        ///   Person({required this.name, required this.age});
-                        /// }
-                        /// *
-                        ///----------------------------------------------------------------------------------------
-                        /// -> Person là lớp (class),
-                        /// -> person1 và person2 là instance của lớp Person.
-                        /// -> Mỗi instance có thể có các giá trị riêng biệt (ví dụ name và age),
-                        /// mặc dù chúng đều được tạo từ lớp Person
-                        ///----------------------------------------------------------------------------------------
-                        ///Đơn giản hóa
-                        ///->Lớp: Text (mô tả cách hiển thị văn bản)
-                        ///->Instance: Cái cụ thể mà bạn đang hiển thị trên màn hình (ví dụ: Text("Hello World"))
-
                         child: const Text(AppStr.doneAllTask),
-                      )
+                      ),
                     ],
                   ),
-          )
+          ),
         ],
       ),
     );
